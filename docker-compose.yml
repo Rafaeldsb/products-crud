@@ -1,0 +1,14 @@
+version: '2'
+services:
+  rest:
+    build: rest
+    ports:
+      - "8888:8888"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_HOST=db
+    volumes:
+      - ./rest/app:/app
+  db:
+    build: ./db
