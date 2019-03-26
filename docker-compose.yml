@@ -12,3 +12,5 @@ services:
       - ./rest/app:/app
   db:
     build: ./db
+    ports:
+      - 33060:3306
