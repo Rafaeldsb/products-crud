@@ -1,16 +1,41 @@
-version: '2'
+version: '3.2'
 services:
   rest:
     build: rest
+    restart: always
     ports:
       - "8888:8888"
     depends_on:
       - db
     environment:
+      - PORT=8888
       - DATABASE_HOST=db
+      - DATABASE_HOST_TEST=db_test
+      - DATABASE_SCHEMA=crud-simples
+      - DATABASE_USER=crud
+      - DATABASE_PASSWORD=42
     volumes:
       - ./rest/app:/app
   db:
-    build: ./db
+    image: mysql:5.7
     ports:
-      - 33060:3306
+      - 33062:3306
+    volumes:
+      - ./db/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=42
+      - MYSQL_DATABASE=crud-simples
+      - MYSQL_USER=crud
+      - MYSQL_PASSWORD=42
+
+  db_test:
+    image: mysql:5.7
+    ports:
+      - 33063:3306
+    volumes:
+      - ./db/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=42
+      - MYSQL_DATABASE=crud-simples
+      - MYSQL_USER=crud
+      - MYSQL_PASSWORD=42

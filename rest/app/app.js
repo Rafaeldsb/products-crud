@@ -1,4 +1,7 @@
 var express = require("express");
+
+var port = process.env.PORT || 8888;
+
 var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
@@ -11,4 +14,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use('/', index);
 app.use('/products', product);
 
-app.listen(8888);
+console.log("Servidor escutando na porta " + port);
+
+app.listen(port);

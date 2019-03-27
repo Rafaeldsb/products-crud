@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `crud-simple` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-USE `crud-simple`;
+CREATE DATABASE  IF NOT EXISTS `crud-simples` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+USE `crud-simples`;
 -- MySQL dump 10.17  Distrib 10.3.11-MariaDB, for osx10.14 (x86_64)
 --
--- Host: localhost    Database: crud-simple
+-- Host: localhost    Database: crud-simples
 -- ------------------------------------------------------
 -- Server version	10.3.11-MariaDB
 
@@ -56,7 +56,7 @@ CREATE TABLE `produto` (
   `idCategoria` int(11) NOT NULL,
   `nome` varchar(400) NOT NULL,
   `descricao` text NOT NULL,
-  `decimal` decimal(11,2) NOT NULL,
+  `valor` decimal(11,2) NOT NULL,
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL,
   PRIMARY KEY (`id`),
