@@ -16,4 +16,5 @@ app.use('/products', product);
 
 console.log("Servidor escutando na porta " + port);
 
-app.listen(port);
+const server = app.listen(port);
+module.exports = server;
