@@ -4,12 +4,10 @@ var Product = {
     getAll: (req, res) => {
         db.query("SELECT * FROM produto", (error, results, fields) => {
             if(error){
-                res.json(error);
+                res.status(500).json(error);
             }
-            var resultJson = JSON.stringify(results);
-            resultJson = JSON.parse(resultJson);
 
-            res.status(200).json(resultJson);
+            res.status(200).json(results);
         });
     },
 
@@ -17,12 +15,13 @@ var Product = {
         let id = req.params.id;
         db.query("SELECT * FROM produto WHERE id = ?", id, (error, results, fields) => {
             if(error){
-                res.json(error);
+                res.status(500).json(error);
             }
-            var resultJson = JSON.stringify(results[0]);
-            resultJson = JSON.parse(resultJson);
+            if(results.length > 0)
+                res.status(200).json(results[0]);
+            else
+                res.status(404).json({message: "Produto não encontrado"});
 
-            res.status(200).json(resultJson);
         });
     },
     update: (req, res) => {
@@ -31,10 +30,13 @@ var Product = {
         Object.assign(params, {updated_at: ~~(Date.now() / 1000)});
         db.query("UPDATE produto SET ? WHERE id = ?", [req.body, id], (error, results, fields) => {
             if(error){
-                res.json(error);
+                res.status(500).json(error);
             }
+            if(results.changedRows > 0)
+                res.status(200).json({message:"Atualizado com sucesso"});
+            else
+                res.status(500).json({message:"Houve algum erro na atualização do produto."});
 
-            res.status(200).json({message:"Atualizado com sucesso"});
         });
     },
     insert: (req, res) => {
@@ -44,10 +46,12 @@ var Product = {
         console.log(params);
         db.query("INSERT INTO produto SET ?", [params], (error, results, fields) => {
             if(error){
-                res.json(error);
+                res.status(500).json(error);
             }
-
-            res.status(200).json({message:"Dados inseridos com sucesso"});
+            if(results.changedRows > 0)
+                res.status(200).json({message:"Dados inseridos com sucesso", id: results.insertId});
+            else
+                res.status(500).json({message:"Houve algum erro na inserção do produto."});
         });
     },
 
@@ -55,7 +59,7 @@ var Product = {
         let id = req.params.id;
         db.query("DELETE FROM produto WHERE id = ?", id, (error, results, fields) => {
             if(error){
-                res.json(error);
+                res.status(500).json(error);
             }
 
             res.status(200).json({message:"Dados apagados com sucesso"});
