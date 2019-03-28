@@ -6,6 +6,7 @@ CRUD Simples para REST API de gerenciamento de produtos e categorias
 
 ## Recomendado
 * Docker
+* Docker-compose
 
 ## Executando
 Para executar este projeto há duas maneiras:
