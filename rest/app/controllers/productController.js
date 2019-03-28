@@ -1,4 +1,7 @@
-var db = require('../config/dbconnection');
+const db = require('../config/dbconnection');
+const helper = require('../utils/helper');
+
+
 
 var Product = {
     getAll: (req, res) => {
@@ -20,7 +23,7 @@ var Product = {
             if(results.length > 0)
                 res.status(200).json(results[0]);
             else
-                res.status(404).json({message: "Produto não encontrado"});
+                res.status(404).json({message: "Produto não encontrado."});
 
         });
     },
@@ -33,7 +36,7 @@ var Product = {
                 res.status(500).json(error);
             }
             if(results.changedRows > 0)
-                res.status(200).json({message:"Atualizado com sucesso"});
+                res.status(200).json({message:"Atualizado com sucesso."});
             else
                 res.status(500).json({message:"Houve algum erro na atualização do produto."});
 
@@ -48,12 +51,14 @@ var Product = {
             if(error){
                 res.status(500).json(error);
             }
-            if(results.changedRows > 0)
-                res.status(200).json({message:"Dados inseridos com sucesso", id: results.insertId});
+            console.log(results);
+            if(results.affectedRows > 0)
+                res.status(200).json({message:"Dados inseridos com sucesso.", id: results.insertId});
             else
                 res.status(500).json({message:"Houve algum erro na inserção do produto."});
         });
     },
+
 
     delete: (req, res) => {
         let id = req.params.id;
@@ -61,10 +66,44 @@ var Product = {
             if(error){
                 res.status(500).json(error);
             }
-
-            res.status(200).json({message:"Dados apagados com sucesso"});
+            console.log(results);
+            if(results.affectedRows > 0)
+                res.status(200).json({message:"Dados apagados com sucesso."});
+            else
+                res.status(500).json({message:"Houve algum erro ao tentar deletar o produto."});
         });
     },
+
+    getParcela: (req, res) => {
+        let id = req.params.id;
+        let qtd = req.params.qtd;
+        db.query("SELECT p.id, p.nome, p.descricao, p.valor, p.created_at, p.updated_at, c.juros FROM produto AS p LEFT JOIN categoria AS c on c.id = p.idCategoria WHERE p.id = ?", id, (error, results, fields) => {
+            if(error){
+                res.status(500).json(error);
+            }
+            if(results.length > 0) {
+                var produto = results[0];
+                res.status(200).json({
+                    product: {
+                        id: produto.id,
+                        nome:produto.nome,
+                        descricao:produto.descricao,
+                        valor: produto.valor,
+                        created_at: produto.created_at,
+                        updated_at: produto.updated_at
+                    }, parcela: {
+                        quantidade: qtd,
+                        juros: produto.juros,
+                        valor: helper.compoundInterest(produto.valor, produto.juros / 100.0, qtd)
+                    }
+                });
+            }
+            else
+                res.status(404).json({message: "Produto não encontrado."});
+
+        });
+
+    }
 };
 
 module.exports = Product;

@@ -3,7 +3,7 @@ const server = require('../app.js');
 
 
 describe('GET /', () => {
-    it('responds with json', function(done) {
+    it('status OK', function(done) {
         request(server)
             .get('/')
             .set('Accept', 'application/json')
